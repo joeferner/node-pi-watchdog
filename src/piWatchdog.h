@@ -12,6 +12,9 @@ public:
 
   static NAN_METHOD(New);
   static NAN_METHOD(getTimeout);
+  static NAN_METHOD(setTimeout);
+  static NAN_METHOD(heartbeat);
+  static NAN_METHOD(disable);
 
 private:
   PiWatchdog();
