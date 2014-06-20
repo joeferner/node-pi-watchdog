@@ -1,0 +1,22 @@
+{
+  "name": "pi-watchdog",
+  "version": "0.0.1",
+  "description": "Node wrapper for Raspberry Pi BCM2835 Watchdog",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:joeferner/node-pi-watchdog.git"
+  },
+  "keywords": [
+    "raspberry",
+    "pi",
+    "BCM2835",
+    "watchdog"
+  ],
+  "author": "Joe Ferner <joe@fernsroth.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/joeferner/node-pi-watchdog/issues"
+  },
+  "homepage": "https://github.com/joeferner/node-pi-watchdog"
+}
