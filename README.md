@@ -53,3 +53,9 @@ piWatchdog.disable(function(err) {
   }
 });
 ```
+
+References
+----------
+
+* http://binerry.de/post/28263824530/raspberry-pi-watchdog-timer
+* https://github.com/binerry/RaspberryPi/blob/master/snippets/c/watchdog/wdt_test.c
