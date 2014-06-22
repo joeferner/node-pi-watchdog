@@ -42,26 +42,40 @@ module.exports = function(fileName) {
   result.getTimeout = result._ensureOpen.bind(result, function(callback) {
     var timeout = new Buffer(4);
     var ret = ioctl(result._fd, WDIOC_GETTIMEOUT, timeout);
-    console.log('getTimeout ioctl', ret);
-    return callback(null, length.readInt32LE(0));
+    if (ret != 0) {
+      return callback(new Error("ioctl failed to WDIOC_GETTIMEOUT with result: " + ret));
+    }
+    return callback(null, timeout.readInt32LE(0));
   });
 
   result.setTimeout = result._ensureOpen.bind(result, function(callback) {
     var timeout = new Buffer(4);
     var ret = ioctl(result._fd, WDIOC_SETTIMEOUT, timeout);
-    console.log('setTimeout ioctl', ret);
+    if (ret != 0) {
+      return callback(new Error("ioctl failed to WDIOC_SETTIMEOUT with result: " + ret));
+    }
     return result.getTimeout(callback);
   });
 
   result.heartbeat = result._ensureOpen.bind(result, function(callback) {
     var ret = ioctl(result._fd, WDIOC_KEEPALIVE);
-    console.log('heartbeat ioctl', ret);
+    if (ret != 0) {
+      return callback(new Error("ioctl failed to WDIOC_KEEPALIVE with result: " + ret));
+    }
     return callback(null, length.readInt32LE(0));
   });
 
   result.disable = result._ensureOpen.bind(result, function(callback) {
     var b = new Buffer('V');
-    return fs.write(result._fd, buffer, 0, 1, 0, callback);
+    return fs.write(result._fd, buffer, 0, 1, 0, function(err, written, buffer) {
+      if (err) {
+        return callback(new Error("Could not write disable to watchdog: " + err));
+      }
+      if (written != 1) {
+        return callback(new Error("Invalid number of bytes written to disable to watchdog. Expected 1, wrote " + written));
+      }
+      return callback();
+    });
   });
 
   return result;
