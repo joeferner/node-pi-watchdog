@@ -48,9 +48,10 @@ module.exports = function(fileName) {
     return callback(null, timeout.readInt32LE(0));
   });
 
-  result.setTimeout = result._ensureOpen.bind(result, function(callback) {
-    var timeout = new Buffer(4);
-    var ret = ioctl(result._fd, WDIOC_SETTIMEOUT, timeout);
+  result.setTimeout = result._ensureOpen.bind(result, function(timeout, callback) {
+    var timeoutBuffer = new Buffer(4);
+    timeoutBuffer.writeInt32LE(timeout, 0);
+    var ret = ioctl(result._fd, WDIOC_SETTIMEOUT, timeoutBuffer);
     if (ret != 0) {
       return callback(new Error("ioctl failed to WDIOC_SETTIMEOUT with result: " + ret));
     }
