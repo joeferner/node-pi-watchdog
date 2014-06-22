@@ -4,10 +4,9 @@ var fs = require('fs');
 var ioctl = require('ioctl');
 var WATCHDOG_FILE_NAME = "/dev/watchdog";
 
-var WATCHDOG_IOCTL_BASE = 'W';
-var WDIOC_KEEPALIVE = (WATCHDOG_IOCTL_BASE << 8) | 5;
-var WDIOC_SETTIMEOUT = (WATCHDOG_IOCTL_BASE << 8) | 6;
-var WDIOC_GETTIMEOUT = (WATCHDOG_IOCTL_BASE << 8) | 7;
+var WDIOC_KEEPALIVE = 2147768069;
+var WDIOC_SETTIMEOUT = 3221509894;
+var WDIOC_GETTIMEOUT = 2147768071;
 
 module.exports = function(fileName) {
   var result = {
