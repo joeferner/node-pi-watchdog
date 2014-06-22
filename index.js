@@ -59,16 +59,17 @@ module.exports = function(fileName) {
   });
 
   result.heartbeat = result._ensureOpen.bind(result, function(callback) {
-    var ret = ioctl(result._fd, WDIOC_KEEPALIVE);
+    var empty = new Buffer(4);
+    var ret = ioctl(result._fd, WDIOC_KEEPALIVE, empty);
     if (ret != 0) {
       return callback(new Error("ioctl failed to WDIOC_KEEPALIVE with result: " + ret));
     }
-    return callback(null, length.readInt32LE(0));
+    return callback();
   });
 
   result.disable = result._ensureOpen.bind(result, function(callback) {
     var b = new Buffer('V');
-    return fs.write(result._fd, buffer, 0, 1, 0, function(err, written, buffer) {
+    return fs.write(result._fd, b, 0, 1, null, function(err, written) {
       if (err) {
         return callback(new Error("Could not write disable to watchdog: " + err));
       }
