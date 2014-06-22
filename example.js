@@ -1,6 +1,6 @@
 'use strict';
 
-var piWatchdog = require('./');
+var piWatchdog = require('./')();
 
 console.log(piWatchdog);
 

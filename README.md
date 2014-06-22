@@ -24,7 +24,7 @@ Example
 -------
 
 ```
-var piWatchdog = require('pi-watchdog');
+var piWatchdog = require('pi-watchdog')();
 
 piWatchdog.getTimeout(function(err, timeout) {
   console.log(timeout);
