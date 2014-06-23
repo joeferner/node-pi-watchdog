@@ -10,7 +10,7 @@ Getting Started
 1. Install the Raspberry Pi's watchdog driver
 
         sudo modprobe bcm2708_wdog
-        sudo nano /etc/modules (add “bcm2708_wdog”)
+        sudo nano /etc/modules (add "bcm2708_wdog")
         
 1. (Optional) Change permissions to `/dev/watchdog`
 
