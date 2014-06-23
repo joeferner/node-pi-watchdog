@@ -12,7 +12,7 @@ Getting Started
         sudo modprobe bcm2708_wdog
         sudo nano /etc/modules (add "bcm2708_wdog")
         
-1. (Optional) Change permissions to `/dev/watchdog`
+1. (Optional) Change permissions of `/dev/watchdog`
 
         sudo nano /etc/udev/rules.d/60-watchdog.rules 
         
