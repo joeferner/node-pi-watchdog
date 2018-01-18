@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git@github.com:joeferner/node-pi-watchdog.git"
+    "url": "https://github.com/TanoCuile/node-pi-watchdog"
   },
   "keywords": [
     "raspberry",
@@ -18,7 +18,7 @@
   "bugs": {
     "url": "https://github.com/joeferner/node-pi-watchdog/issues"
   },
-  "homepage": "https://github.com/joeferner/node-pi-watchdog",
+  "homepage": "https://github.com/TanoCuile/node-pi-watchdog",
   "dependencies": {
     "ioctl": "^2.0.1"
   }
