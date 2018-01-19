@@ -124,7 +124,7 @@ class PiWatchdog {
      */
     open() {
         return new Promise((resolve, reject) => {
-            return fs.open(this._fileName._fileName, 'r+', (err, fileResource) => {
+            return fs.open(this._fileName, 'r+', (err, fileResource) => {
                 if (err) {
                     return reject(err);
                 }
