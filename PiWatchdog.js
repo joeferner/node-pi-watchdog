@@ -2,11 +2,12 @@
 
 const fs = require('fs');
 const ioctl = require('ioctl');
-const WATCHDOG_FILE_NAME = '/dev/watchdog';
 
-const WDIOC_KEEPALIVE = 2147768069;
-const WDIOC_SETTIMEOUT = 3221509894;
-const WDIOC_GETTIMEOUT = 2147768071;
+const WATCHDOG_FILE_NAME = exports.WATCHDOG_FILE_NAME = '/dev/watchdog';
+
+const WATCHDOG_KEEP_ALIVE = exports.WATCHDOG_KEEP_ALIVE = 2147768069;
+const WATCHDOG_SET_TIMEOUT = exports.WATCHDOG_SET_TIMEOUT = 3221509894;
+const WATCHDOG_GET_TIMEOUT = exports.WATCHDOG_GET_TIMEOUT = 2147768071;
 
 exports.PiWatchdog = class PiWatchdog {
     constructor(watchdogFileName) {
@@ -15,32 +16,9 @@ exports.PiWatchdog = class PiWatchdog {
     }
 
     /**
-     * Open watchdog file
-     *
-     * @private
-     *
-     * @return {Promise}
-     */
-    open() {
-        return new Promise((resolve, reject) => {
-            return fs.open(this._fileName._fileName, 'r+', (err, fileResource) => {
-                if (err) {
-                    return reject(err);
-                }
-
-                this._fileResource = fileResource;
-                return resolve();
-            });
-        });
-    }
-
-    /**
      * Lazy loading wrapper
      *
-     * @private
-     *
-     * @param fn
-     * @return {*}
+     * @return {Promise}
      */
     ensureOpen() {
         return new Promise((resolve, reject) => {
@@ -54,43 +32,65 @@ exports.PiWatchdog = class PiWatchdog {
         });
     }
 
+    /**
+     * Get timeout
+     *
+     * @return {Promise.<number>}
+     */
     getTimeout() {
         return this.ensureOpen()
             .then(() => {
                 const timeout = new Buffer(4);
-                const ret = ioctl(this._fileResource, WDIOC_GETTIMEOUT, timeout);
+                const ret = ioctl(this._fileResource, WATCHDOG_GET_TIMEOUT, timeout);
                 if (ret !== 0) {
-                    throw new Error('ioctl failed to WDIOC_GETTIMEOUT with result: ' + ret);
+                    throw new Error('ioctl failed to WATCHDOG_GET_TIMEOUT with result: ' + ret);
                 }
 
                 return timeout.readInt32LE(0);
             });
     }
 
+    /**
+     * Set timeout
+     *
+     * @param timeout
+     *
+     * @return {Promise.<number>}
+     */
     setTimeout(timeout) {
         return this.ensureOpen()
             .then(() => {
                 const timeoutBuffer = new Buffer(4);
                 timeoutBuffer.writeInt32LE(timeout, 0);
-                const ret = ioctl(this._fileResource, WDIOC_SETTIMEOUT, timeoutBuffer);
+                const ret = ioctl(this._fileResource, WATCHDOG_SET_TIMEOUT, timeoutBuffer);
                 if (ret !== 0) {
-                    throw new Error('ioctl failed to WDIOC_SETTIMEOUT with result: ' + ret);
+                    throw new Error('ioctl failed to WATCHDOG_SET_TIMEOUT with result: ' + ret);
                 }
-                return timeout.readInt32LE(0);
+                return timeoutBuffer.readInt32LE(0);
             });
     }
 
+    /**
+     * Make heartbeat
+     *
+     * @return {Promise.<void>}
+     */
     heartbeat() {
         return this.ensureOpen()
             .then(() => {
                 const empty = new Buffer(4);
-                const ret = ioctl(this._fileResource, WDIOC_KEEPALIVE, empty);
+                const ret = ioctl(this._fileResource, WATCHDOG_KEEP_ALIVE, empty);
                 if (ret !== 0) {
-                    throw new Error('ioctl failed to WDIOC_KEEPALIVE with result: ' + ret);
+                    throw new Error('ioctl failed to WATCHDOG_KEEP_ALIVE with result: ' + ret);
                 }
             });
     }
 
+    /**
+     * Magic-disable watchdog
+     *
+     * @return {Promise.<void>}
+     */
     disable() {
         return this.ensureOpen()
             .then(() => {
@@ -110,5 +110,29 @@ exports.PiWatchdog = class PiWatchdog {
                     }
                 });
             });
+    }
+
+    /**
+     * Open watchdog file
+     *
+     * @private
+     *
+     * @return {Promise.<void>}
+     */
+    open() {
+        return new Promise((resolve, reject) => {
+            return fs.open(this._fileName._fileName, 'r+', (err, fileResource) => {
+                if (err) {
+                    return reject(err);
+                }
+
+                this._fileResource = fileResource;
+                return resolve();
+            });
+        });
+    }
+
+    toString() {
+        return this._fileName + ' - ' + (this._fileResource ? 'opened' : 'not opened');
     }
 };
