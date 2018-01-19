@@ -9,7 +9,10 @@ const WATCHDOG_KEEP_ALIVE = exports.WATCHDOG_KEEP_ALIVE = 2147768069;
 const WATCHDOG_SET_TIMEOUT = exports.WATCHDOG_SET_TIMEOUT = 3221509894;
 const WATCHDOG_GET_TIMEOUT = exports.WATCHDOG_GET_TIMEOUT = 2147768071;
 
-exports.PiWatchdog = class PiWatchdog {
+/**
+ * Class for interact with linux watchdog
+ */
+class PiWatchdog {
     constructor(watchdogFileName) {
         this._fileName = watchdogFileName || WATCHDOG_FILE_NAME;
         this._fileResource = null;
@@ -135,4 +138,6 @@ exports.PiWatchdog = class PiWatchdog {
     toString() {
         return this._fileName + ' - ' + (this._fileResource ? 'opened' : 'not opened');
     }
-};
+}
+
+exports.PiWatchdog = PiWatchdog;

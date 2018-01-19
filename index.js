@@ -6,7 +6,7 @@ const PiWatchdog = require('./PiWatchdog').PiWatchdog;
 /**
  * Automatically generate PiWatchdog object
  *
- * @param {string} fileName
+ * @param {string} [fileName]
  *
  * @return {PiWatchdog}
  */
