@@ -1,6 +1,6 @@
 {
   "name": "pi-watchdog",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Node wrapper for Raspberry Pi BCM2835 Watchdog",
   "main": "index.js",
   "repository": {
@@ -16,10 +16,13 @@
   "author": "Joe Ferner <joe@fernsroth.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/joeferner/node-pi-watchdog/issues"
+    "url": "https://github.com/TanoCuile/node-pi-watchdog/issues"
   },
   "homepage": "https://github.com/TanoCuile/node-pi-watchdog",
   "dependencies": {
     "ioctl": "^2.0.1"
+  },
+  "engines": {
+    "node": ">= 8.0"
   }
 }
