@@ -1,32 +1,61 @@
 'use strict';
 
-var piWatchdog = require('./')();
+const wd = require('./index');
 
-console.log(piWatchdog);
+/**
+ * @type {PiWatchdog}
+ */
+const piWatchdog = wd();
 
-console.log('getting timeout');
-piWatchdog.getTimeout(function(err, timeout) {
-  console.log('getTimeout', arguments);
+console.log(piWatchdog.toString());
 
-  console.log('setting timeout');
-  piWatchdog.setTimeout(15, function(err, timeout) {
-    console.log('setTimeout', arguments);
+getWatchdogTimeout()
+    .then((timeout) => {
+        console.log('getTimeout', timeout);
 
-    setInterval(sendHeartbeat, 5000);
-  });
-});
+        return setWatchdogTimeout();
+    });
 
-function sendHeartbeat() {
-  console.log('sending heartbeat')
-  piWatchdog.heartbeat(function(err) {
-    console.log('heartbeat', arguments);
-  });
+setTimeout(function () {
+    console.log('disabling watchdog');
+    piWatchdog.disable()
+        .then(() => {
+            console.log('disable');
+            process.exit(0);
+        })
+        .catch(showError);
+}, 20000);
+
+function getWatchdogTimeout() {
+    console.log('getting timeout');
+    return piWatchdog.getTimeout()
+        .then((timeout) => {
+            console.log('getTimeout', timeout);
+
+            return timeout;
+        })
+        .catch(showError);
 }
 
-setTimeout(function() {
-  console.log('disabling watchdog')
-  piWatchdog.disable(function(err) {
-    console.log('disable', arguments);
-    process.exit(0);
-  });
-}, 20000);
+function setWatchdogTimeout() {
+    console.log('setting timeout');
+    return piWatchdog.setTimeout(15)
+        .then((timeout) => {
+            console.log('setTimeout', timeout);
+
+            return setInterval(sendHeartbeat, 5000);
+        })
+        .catch(showError);
+};
+
+function sendHeartbeat() {
+    console.log('sending heartbeat');
+    piWatchdog.heartbeat()
+        .then(() => console.log('Heartbeat sent'))
+        .catch(showError);
+}
+
+function showError(error) {
+    console.log(piWatchdog.toString());
+    console.error(error);
+}
