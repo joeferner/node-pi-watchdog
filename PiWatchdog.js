@@ -13,8 +13,11 @@ const WATCHDOG_GET_TIMEOUT = exports.WATCHDOG_GET_TIMEOUT = 2147768071;
  * Class for interact with linux watchdog
  */
 class PiWatchdog {
-    constructor(watchdogFileName) {
-        this._fileName = watchdogFileName || WATCHDOG_FILE_NAME;
+    constructor(watchdogFileName, keepAlive, setTimeout, getTimeout) {
+        this._keepAlive = keepAlive;
+        this._setTimeout = setTimeout;
+        this._getTimeout = getTimeout;
+        this._fileName = watchdogFileName;
         this._fileResource = null;
     }
 
@@ -44,7 +47,7 @@ class PiWatchdog {
         return this.ensureOpen()
             .then(() => {
                 const timeout = new Buffer(4);
-                const ret = ioctl(this._fileResource, WATCHDOG_GET_TIMEOUT, timeout);
+                const ret = ioctl(this._fileResource, this._getTimeout, timeout);
                 if (ret !== 0) {
                     throw new Error('ioctl failed to WATCHDOG_GET_TIMEOUT with result: ' + ret);
                 }
@@ -65,7 +68,7 @@ class PiWatchdog {
             .then(() => {
                 const timeoutBuffer = new Buffer(4);
                 timeoutBuffer.writeInt32LE(timeout, 0);
-                const ret = ioctl(this._fileResource, WATCHDOG_SET_TIMEOUT, timeoutBuffer);
+                const ret = ioctl(this._fileResource, this._setTimeout, timeoutBuffer);
                 if (ret !== 0) {
                     throw new Error('ioctl failed to WATCHDOG_SET_TIMEOUT with result: ' + ret);
                 }
@@ -82,7 +85,7 @@ class PiWatchdog {
         return this.ensureOpen()
             .then(() => {
                 const empty = new Buffer(4);
-                const ret = ioctl(this._fileResource, WATCHDOG_KEEP_ALIVE, empty);
+                const ret = ioctl(this._fileResource, this._keepAlive, empty);
                 if (ret !== 0) {
                     throw new Error('ioctl failed to WATCHDOG_KEEP_ALIVE with result: ' + ret);
                 }
